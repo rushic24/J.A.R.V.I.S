@@ -62,6 +62,7 @@ I have wrote code which you can use JARVIS in the following ways :
 To run this project you should need some API key's for reading news, for finding phone number location. Register for your API key by clicking the following
 - [NewsAPI](https://newsapi.org/) : used for fetching news
 - [Open cage](https://opencagedata.com/) : to locate a place in maps
+> **NOTE:** Before jumping into installtion process, I would like to say that this project is supported only to ***Windows OS*** user, I am working for making this project OS independent it may take time.
 ### Installation
 - You need to first ```fork``` this repository and ```clone``` the repository to your local system 
 
