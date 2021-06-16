@@ -24,7 +24,6 @@ bs4==0.0.1
 pywikihow==0.5.7
 speedtest-cli==2.1.3
 pytube==10.8.1
-os-sys==2.1.4
 subprocess32==3.5.4
 qt5-applications
 qt5-tools

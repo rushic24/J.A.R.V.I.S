@@ -6,16 +6,16 @@ import cv2
 import pyaudio
 import wave
 import subprocess
-import msvcrt
+# import msvcrt
 import pyautogui
 
 def Record_Option(option):
     
     audio = pyaudio.PyAudio()
     time_stamp = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')    
-    VideoFile_name = f'E:\\amFOSS\\JARVIS\\Recorded\\Screen\\VideoFile-{time_stamp}.mp4'
-    AudioFile_name = f'E:\\amFOSS\\JARVIS\\Recorded\\Audio\\AudioFile-{time_stamp}.wav'
-    OutputFileName = f'E:\\amFOSS\\JARVIS\\Recorded\\SCREENRECORDED\\VideoFile-{time_stamp}.mp4'
+    VideoFile_name = f'Screen\\VideoFile-{time_stamp}.mp4'
+    AudioFile_name = f'Audio\\AudioFile-{time_stamp}.wav'
+    OutputFileName = f'SCREENRECORDED\\VideoFile-{time_stamp}.mp4'
     frames=[]
     stream = audio.open(format=pyaudio.paInt16,channels=1,rate=44100,input=True,frames_per_buffer=1024)
     if "screen recording" in option:

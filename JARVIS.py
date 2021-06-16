@@ -20,7 +20,7 @@ import psutil
 import instaloader
 import pyautogui
 import PyPDF2
-from Recordings import Record_Option
+# from Recordings import Record_Option
 from PIL import ImageGrab
 import pyaudio
 import wave
@@ -43,9 +43,9 @@ from pytube import YouTube
 #Set our engine to "Pyttsx3" which is used for text to speech in Python 
 #and sapi5 is Microsoft speech application platform interface 
 #we will be using this for text to speech function.
-engine = pyttsx3.init('sapi5')
-voices = engine.getProperty('voices')
-engine.setProperty('voice',voices[0].id) #index '0' for 'David'(male) voice index '1' for 'zira'(female) voice
+engine = pyttsx3.init()
+# voices = engine.getProperty('voices')
+# engine.setProperty('voice',voices[0].id) #index '0' for 'David'(male) voice index '1' for 'zira'(female) voice
 
 #NOTE
 #Initialize your whatsapp contack info of individual and group
@@ -55,7 +55,7 @@ engine.setProperty('voice',voices[0].id) #index '0' for 'David'(male) voice inde
 #for the key value pairs in the whatsapp group you need to save the group name as key and group 22 charcters ID as the value the ID can be found in the group invite link
 # Eg  key = "school group" value = "IHNJFHT4uJAFBJAKJAVBu5"
 #declare the individual's contact number with the starting of their country code
-contact = {"sujith":"+918945751262","school group":"IHNJFHT4uJAFBJAKJAVBu5"} #Example dictionary
+contact = {"sujith":"+918945751262","school group":"IHNJFHT4uJsAFBJAKJAVBu5"} #Example dictionary
 
 #Main classs where all the functiona are present
 class MainThread(QThread):
@@ -93,6 +93,8 @@ class MainThread(QThread):
         while True:
             self.command = self.take_Command() #Every time taking command after a task is done
             print(self.command)
+            
+            
             if ('play a song' in self.command) or ('youtube' in self.command) or ("download a song" in self.command) or ("download song" in self.command) : 
                 #commands for opening youtube, playing a song in youtube, and download a song in youtube
                 self.yt(self.command) #function is from line 555
@@ -360,7 +362,7 @@ class MainThread(QThread):
         temp = data.find("div",class_="BNeawe").text
         self.talk(f"current {search} is {temp}")
 
-    #Mobile camera
+    # Mobile camera
     def Mobilecamra(self):
         import urllib.request
         import numpy as np
@@ -967,34 +969,34 @@ class Main(QMainWindow):
     
     #NOTE make sure to place a correct path where you are keeping this gifs
     def startTask(self):
-        self.ui.movie = QtGui.QMovie("E:/amFOSS/JARVIS/JarvisUI/ironman1.gif")
+        self.ui.movie = QtGui.QMovie("UI/ironman1.gif")
         self.ui.label_2.setMovie(self.ui.movie)
         self.ui.movie.start()
-        self.ui.movie = QtGui.QMovie("E:/amFOSS/JARVIS/ringJar.gif")
+        self.ui.movie = QtGui.QMovie("UI/powersource.gif")
         self.ui.label_3.setMovie(self.ui.movie)
         self.ui.movie.start()
-        self.ui.movie = QtGui.QMovie("E:/amFOSS/JARVIS/JarvisUI/circle.gif")
+        self.ui.movie = QtGui.QMovie("UI/circle.gif")
         self.ui.label_4.setMovie(self.ui.movie)
         self.ui.movie.start()
-        self.ui.movie = QtGui.QMovie("E:/amFOSS/JARVIS/JarvisUI/lines1.gif")
+        self.ui.movie = QtGui.QMovie("UI/lines1.gif")
         self.ui.label_7.setMovie(self.ui.movie)
         self.ui.movie.start()
-        self.ui.movie = QtGui.QMovie("E:/amFOSS/JARVIS/JarvisUI/ironman3.gif")
+        self.ui.movie = QtGui.QMovie("UI/ironman3.gif")
         self.ui.label_8.setMovie(self.ui.movie)
         self.ui.movie.start()
-        self.ui.movie = QtGui.QMovie("E:/amFOSS/JARVIS/JarvisUI/circle.gif")
+        self.ui.movie = QtGui.QMovie("UI/circle.gif")
         self.ui.label_9.setMovie(self.ui.movie)
         self.ui.movie.start()
-        self.ui.movie = QtGui.QMovie("E:/amFOSS/JARVIS/JarvisUI/powersource.gif")
+        self.ui.movie = QtGui.QMovie("UI/powersource.gif")
         self.ui.label_12.setMovie(self.ui.movie)
         self.ui.movie.start()
-        self.ui.movie = QtGui.QMovie("E:/amFOSS/JARVIS/JarvisUI/powersource.gif")
+        self.ui.movie = QtGui.QMovie("UI/powersource.gif")
         self.ui.label_13.setMovie(self.ui.movie)
         self.ui.movie.start()
-        self.ui.movie = QtGui.QMovie("E:/amFOSS/JARVIS/JarvisUI/ironman3_flipped.gif")
+        self.ui.movie = QtGui.QMovie("UI/ironman3_flipped.gif")
         self.ui.label_16.setMovie(self.ui.movie)
         self.ui.movie.start()
-        self.ui.movie = QtGui.QMovie("E:/amFOSS/JARVIS/JarvisUI/Sujith.gif")
+        # self.ui.movie = QtGui.QMovie("UI/Sujith.gif")
         self.ui.label_17.setMovie(self.ui.movie)
         self.ui.movie.start()
         timer = QTimer(self)

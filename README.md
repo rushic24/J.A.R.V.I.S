@@ -82,6 +82,17 @@ To run this project you should need some API key's for reading news, for finding
 
 That's it **#Enjoy** speaking with your computer friend 😁
 
+### Installation for Arch Linux
+``` sudo pacman -S espeaks tk python-pyqt5 qt5-base jack2 jack2-dbus```
+- Start jack2
+```jack_control start```
+- My python version: Python 3.9.5
+- Make sure to install all the required python modules mentioned above or you can simply install them by 
+
+    ```pip install -r arch_requirements.txt```
+
+
+
 Demo video for ***JARVIS*** is available [here](https://docs.google.com/presentation/d/14w4dQUpqVOmGvAXEn8vYkHQUmMYU72wIb-AK0SWCWYk/edit?usp=sharing)
 
 ### FINAL GUI of JARVIS😎
