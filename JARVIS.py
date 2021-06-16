@@ -20,7 +20,7 @@ import psutil
 import instaloader
 import pyautogui
 import PyPDF2
-# from Recordings import Record_Option
+from Recordings import Record_Option
 from PIL import ImageGrab
 import pyaudio
 import wave
@@ -40,10 +40,158 @@ from pywikihow import search_wikihow
 import speedtest
 from pytube import YouTube
 
+#----------------------------------------------------------------------
+#aish 
+import argparse
+import os
+import readline
+import signal
+import subprocess
+import sys
+from colorama import Fore, Style
+import openai
+
+# export OPEN_AI_KEY=YOUR_KEY_HERE, run this in linux terminal
+openai.api_key = os.environ["OPEN_AI_KEY"]
+EXAMPLES_CONTEXT = "Linux bash command to accomplish the task"
+REVERSE_EXAMPLES_CONTEXT = "English description of Linux bash command"
+
+# You can uncomment examples to affect the results, but more examples costs
+# more to process.
+EXAMPLES = [
+    #["Get the last 5 lines of foo.txt", "tail -n 5 foo.txt"],
+    ["Find files ending in \"log\" in the root directory",
+        "find / -name \"*.log\""],
+    ["Look up the IP address 12.34.56.78",
+        "nslookup 12.34.56.78"],
+    #["Convert example.png to a JPEG",
+    #    "convert example.png example.jpg"],
+    ["Create a git branch called foobie-bletch",
+        "git checkout -b foobie-bletch"]
+]
+
+MODEL = "davinci"
+
+def get_command(prompt):
+    results = openai.Answer.create(
+        search_model=MODEL,
+        model=MODEL,
+        question=prompt,
+        examples_context=EXAMPLES_CONTEXT,
+        examples=EXAMPLES,
+        max_tokens=100,
+        documents=[],
+        stop=["\n", "<|endoftext|>"],
+    )
+    if results:
+        return results['answers'][0]
+
+def get_description(command):
+    results = openai.Answer.create(
+        search_model=MODEL,
+        model=MODEL,
+        question=command,
+        examples_context=REVERSE_EXAMPLES_CONTEXT,
+        examples=reverse_pairs(EXAMPLES),
+        max_tokens=200,
+        documents=[],
+        stop=["\n", "<|endoftext|>"],
+    )
+    if results:
+        return results['answers'][0]
+
+def reverse_pairs(ls):
+    return [(b, a) for a, b in ls]
+
+CURRENT_JOB = None
+LIVE_DANGEROUSLY = False
+parser = argparse.ArgumentParser()
+parser.add_argument("--live-dangerously", help="Don't confirm commands before running", action="store_true")
+parser.add_argument("--reverse", help="The AI describes your bash command in natural language", action="store_true")
+args = parser.parse_args()
+if args.live_dangerously:
+    print(f"{Fore.RED}{Style.BRIGHT}YOU WILL NOT BE GIVEN A CHANCE TO APPROVE OR CANCEL THE AI-GENERATED COMMAND. THIS IS A BAD IDEA AND YOU SHOULD EXIT NOW.{Style.RESET_ALL}")
+    LIVE_DANGEROUSLY = True
+
+def call_openai(command):
+    try:
+        # request = input(f'\001{Fore.GREEN}{Style.BRIGHT}\002~> \001{Style.RESET_ALL}\002')
+        request = command
+    except EOFError:
+        print("")
+        print(f"{Fore.GREEN}{Style.BRIGHT}<~ {Fore.CYAN}{Style.NORMAL}Farewell, human.{Style.RESET_ALL}")
+        sys.exit(0)
+    except KeyboardInterrupt:
+        print("")
+
+    if not request.strip():
+        pass
+    if request.startswith("cd "):
+        os.chdir(request[3:])
+        pass
+
+    if request.strip() == "cd":
+        os.chdir(os.path.expanduser('~'))
+        pass
+
+    if request.strip() == "pwd":
+        print(f"{Fore.GREEN}{Style.BRIGHT}<~ {Fore.YELLOW}{Style.NORMAL}" + os.getcwd() + Style.RESET_ALL)
+        pass
+
+    if request.strip() == "clear":
+        subprocess.run(["clear"], shell=True)
+        pass
+
+    print(f"🧠 {Style.BRIGHT}Thinking...{Style.RESET_ALL}")
+
+    if not args.reverse:
+        new_command = get_command(request)
+
+        if not new_command or new_command == "None":
+            print("<~ Unable to figure out how to do that")
+            return
+        if not LIVE_DANGEROUSLY:
+            try:
+                approved = input(f"\001{Fore.GREEN}{Style.BRIGHT}\002<~ \001{Fore.CYAN}{Style.NORMAL}\002" + new_command + "\001" + Style.RESET_ALL + "\002")
+            except (EOFError, KeyboardInterrupt):
+                print(f"\n{Fore.RED}{Style.BRIGHT}<~ Canceled{Style.RESET_ALL}")
+        else:
+            print(f"{Fore.GREEN}{Style.BRIGHT}<~ {Fore.CYAN}{Style.NORMAL}" + new_command + Style.RESET_ALL)
+    else:
+        new_command = request
+        description = get_description(request)
+        if not description or description=="None":
+            print(f"{Fore.RED}{Style.BRIGHT}<~ Couldn't describe command{Style.RESET_ALL}")
+            pass
+        if not LIVE_DANGEROUSLY:
+            try:
+                approved = input(f"\001{Fore.GREEN}{Style.BRIGHT}\002<~ \001{Fore.CYAN}{Style.NORMAL}\002" + description + "\001" + Style.RESET_ALL + "\002")
+            except (EOFError, KeyboardInterrupt):
+                print(f"\n{Fore.RED}{Style.BRIGHT}<~ Canceled{Style.RESET_ALL}")
+                pass
+        else:
+            print(f"{Fore.GREEN}{Style.BRIGHT}<~ {Fore.CYAN}{Style.NORMAL}" + description + Style.RESET_ALL)
+
+
+    CURRENT_JOB = subprocess.Popen(["bash", "-c", new_command])
+    try:
+        CURRENT_JOB.wait()
+    except KeyboardInterrupt:
+        #os.kill(CURRENT_JOB.pid, signal.SIGINT)
+        pass
+#----------------------------------------------------------------------
+
+
+
 #Set our engine to "Pyttsx3" which is used for text to speech in Python 
 #and sapi5 is Microsoft speech application platform interface 
 #we will be using this for text to speech function.
+
+# sapi5 doesn't work on linux, we need to use espeaks
+
 engine = pyttsx3.init()
+
+# Commented for linux support
 # voices = engine.getProperty('voices')
 # engine.setProperty('voice',voices[0].id) #index '0' for 'David'(male) voice index '1' for 'zira'(female) voice
 
@@ -55,10 +203,10 @@ engine = pyttsx3.init()
 #for the key value pairs in the whatsapp group you need to save the group name as key and group 22 charcters ID as the value the ID can be found in the group invite link
 # Eg  key = "school group" value = "IHNJFHT4uJAFBJAKJAVBu5"
 #declare the individual's contact number with the starting of their country code
-contact = {"sujith":"+918945751262","school group":"IHNJFHT4uJsAFBJAKJAVBu5"} #Example dictionary
+contact = {"sujith":"+918232438641","school group":"IHNJFHT4uJsAFBJAKJAVBu5"} #Example dictionary
 
 #Main classs where all the functiona are present
-class MainThread(QThread):
+class MainThread(QThread): 
     def __init__(self):
         super(MainThread,self).__init__()
     
@@ -318,7 +466,10 @@ class MainThread(QThread):
             elif 'sleep the system' in self.command:
                 self.talk("Boss the system is going to sleep")
                 os.system("rundll32.exe powrprof.dll, SetSuspendState 0,1,0")
-            
+            else:
+                #Call the openai
+                call_openai(self.command)
+                
     #Intro msg
     def Intro(self):
         while True:
